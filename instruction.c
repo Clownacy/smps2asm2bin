@@ -814,13 +814,13 @@ static void Macro_smpsLoop(unsigned int arg_count, unsigned int arg_array[])
 	assert(arg_count >= 3);
 
 	WriteByte(0xF7);
-	WriteByte(arg_array[0]);
-	WriteByte(arg_array[1]);
+	WriteByte(arg_array[0]);	// Index
+	WriteByte(arg_array[1]);	// Loops
 
 	if (target_driver >= 2)
-		WriteShort(arg_array[2]);
+		WriteShort(arg_array[2]);	// Location
 	else
-		WriteShort(arg_array[2] - GetLogicalAddress() - 1);
+		WriteShort(arg_array[2] - GetLogicalAddress() - 1);	// Location
 }
 
 static void Macro_smpsCall(unsigned int arg_count, unsigned int arg_array[])
@@ -839,11 +839,19 @@ static void Macro_smpsFMAlterVol(unsigned int arg_count, unsigned int arg_array[
 {
 	assert(arg_count >= 1);
 
-	if (target_driver >= 3 && arg_count >= 2)
+	if (arg_count >= 2)
 	{
-		WriteByte(0xE5);
-		WriteByte(arg_array[0]);
-		WriteByte(arg_array[1]);
+		if (target_driver >= 3)
+		{
+			WriteByte(0xE5);
+			WriteByte(arg_array[0]);
+			WriteByte(arg_array[1]);
+		}
+		else
+		{
+			WriteByte(0xE6);
+			WriteByte(arg_array[1]);
+		}
 	}
 	else
 	{
