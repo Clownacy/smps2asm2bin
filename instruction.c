@@ -844,19 +844,19 @@ static void Macro_smpsFMAlterVol(unsigned int arg_count, unsigned int arg_array[
 		if (target_driver >= 3)
 		{
 			WriteByte(0xE5);
-			WriteByte(arg_array[0]);
-			WriteByte(arg_array[1]);
+			WriteByte(arg_array[0]);	// PSG volume delta (ignored in S3/S&K/S3D's driver)
+			WriteByte(arg_array[1]);	// FM volume delta
 		}
 		else
 		{
 			WriteByte(0xE6);
-			WriteByte(arg_array[1]);
+			WriteByte(arg_array[1]);	// FM volume delta
 		}
 	}
 	else
 	{
 		WriteByte(0xE6);
-		WriteByte(arg_array[0]);
+		WriteByte(arg_array[0]);	// FM volume delta
 	}
 }
 
