@@ -1528,7 +1528,14 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 	if (!strcmp(opcode, "dc.b"))
 	{
 		for (unsigned int i = 0; i < arg_count; ++i)
-			WriteByte(int_arg_array[i]);
+		{
+			const unsigned int value = int_arg_array[i];
+
+			if (value > 0xFF)
+				PrintError("Error: dc.b value must fit into a byte\n");
+
+			WriteByte(value);
+		}
 	}
 	else
 	{
