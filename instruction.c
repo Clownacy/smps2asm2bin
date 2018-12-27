@@ -20,6 +20,7 @@ static unsigned int target_driver = 2;
 static unsigned int source_driver;
 static unsigned int target_smps2asm_version;
 static size_t song_start_address;
+static unsigned int current_voice;
 
 static const char *notes[] = {
 	"nRst", "nC0", "nCs0", "nD0", "nEb0", "nE0", "nF0", "nFs0", "nG0", "nAb0", "nA0", "nBb0", "nB0", "nC1", "nCs1", "nD1",
@@ -371,12 +372,13 @@ static void Macro_smpsHeaderStartSong(unsigned int arg_count, unsigned int arg_a
 	assert(arg_count >= 1);
 
 	song_start_address = GetLogicalAddress();
+	current_voice = 0;
 
 	source_driver = arg_array[0];
 	target_smps2asm_version = (arg_count >= 2) ? arg_array[1] : 0;
 
 	if (target_smps2asm_version > SMPS2ASM_VERSION)
-		PrintError("Error: Song targets a newer version of SMPS2ASM that this tool doesn't support (version %d)\n", target_smps2asm_version);
+		PrintError("Error: Song targets a newer version of SMPS2ASM than what this tool supports (it wants version %d)\n", target_smps2asm_version);
 
 	if (undefined_symbol)
 		PrintError("Error: smpsHeaderStartSong must be evaluable on first pass\n");
@@ -416,6 +418,8 @@ static void Macro_smpsHeaderVoiceUVB(unsigned int arg_count, unsigned int arg_ar
 
 	if (target_driver == 3 || target_driver == 4)
 		WriteShort(0x17D8);
+	else if (target_driver == 5)
+		PrintError("Error: smpsHeaderVoiceUVB not supported in Flamewing's driver yet\n");
 	else
 		PrintError("Error: smpsHeaderVoiceUVB not supported in S1/S2's drivers\n");
 }
@@ -424,8 +428,8 @@ static void Macro_smpsHeaderChan(unsigned int arg_count, unsigned int arg_array[
 {
 	assert(arg_count >= 2);
 
-	WriteByte(arg_array[0]);
-	WriteByte(arg_array[1]);
+	WriteByte(arg_array[0]);	// DAC+FM channel count
+	WriteByte(arg_array[1]);	// PSG channel count
 }
 
 static void Macro_smpsHeaderTempo(unsigned int arg_count, unsigned int arg_array[])
@@ -440,43 +444,43 @@ static void Macro_smpsHeaderDAC(unsigned int arg_count, unsigned int arg_array[]
 {
 	assert(arg_count >= 1);
 
-	CheckedChannelPointer(arg_array[0]);
-	WriteByte((arg_count >= 2) ? arg_array[1] : 0);
-	WriteByte((arg_count >= 3) ? arg_array[2] : 0);
+	CheckedChannelPointer(arg_array[0]);		// Location
+	WriteByte((arg_count >= 2) ? arg_array[1] : 0);	// Pitch
+	WriteByte((arg_count >= 3) ? arg_array[2] : 0);	// Volume
 }
 
 static void Macro_smpsHeaderFM(unsigned int arg_count, unsigned int arg_array[])
 {
 	assert(arg_count >= 3);
 
-	CheckedChannelPointer(arg_array[0]);
-	WriteByte(arg_array[1]);
-	WriteByte(arg_array[2]);
+	CheckedChannelPointer(arg_array[0]);	// Location
+	WriteByte(arg_array[1]);		// Pitch
+	WriteByte(arg_array[2]);		// Volume
 }
 
 static void Macro_smpsHeaderPSG(unsigned int arg_count, unsigned int arg_array[])
 {
 	assert(arg_count >= 5);
 
-	CheckedChannelPointer(arg_array[0]);
-	WriteByte(PSGPitchConvert(arg_array[1]));
-	WriteByte(arg_array[2]);
-	WriteByte(arg_array[3]);
-	WriteByte(arg_array[4]);
+	CheckedChannelPointer(arg_array[0]);		// Location
+	WriteByte(PSGPitchConvert(arg_array[1]));	// Pitch
+	WriteByte(arg_array[2]);			// Volume
+	WriteByte(arg_array[3]);			// Modulation
+	WriteByte(arg_array[4]);			// Instrument
 }
 
 static void Macro_smpsHeaderTempoSFX(unsigned int arg_count, unsigned int arg_array[])
 {
 	assert(arg_count >= 1);
 
-	WriteByte(arg_array[0]);
+	WriteByte(arg_array[0]);	// Tempo
 }
 
 static void Macro_smpsHeaderChanSFX(unsigned int arg_count, unsigned int arg_array[])
 {
 	assert(arg_count >= 1);
 
-	WriteByte(arg_array[0]);
+	WriteByte(arg_array[0]);	// Channel count
 }
 
 static void Macro_smpsHeaderSFXChannel(unsigned int arg_count, unsigned int arg_array[])
@@ -488,11 +492,11 @@ static void Macro_smpsHeaderSFXChannel(unsigned int arg_count, unsigned int arg_
 	else if (target_driver < 3 && arg_array[0] == LookupDictionary("cFM6"))
 		PrintError("Error: Using channel ID of FM6 ($06) in Sonic 1 or Sonic 2 drivers is unsupported. Change it to another channel.\n");
 
-	WriteByte(0x80);
-	WriteByte(arg_array[0]);
-	CheckedChannelPointer(arg_array[1]);
-	WriteByte((arg_array[0] & 0x80) ? PSGPitchConvert(arg_array[2]) : arg_array[2]);
-	WriteByte(arg_array[3]);
+	WriteByte(0x80);			// Playback-control
+	WriteByte(arg_array[0]);		// Channel ID
+	CheckedChannelPointer(arg_array[1]);	// Location
+	WriteByte((arg_array[0] & 0x80) ? PSGPitchConvert(arg_array[2]) : arg_array[2]);	// Pitch
+	WriteByte(arg_array[3]);		// Volume
 }
 
 static void Macro_smpsPan(unsigned int arg_count, unsigned int arg_array[])
@@ -500,7 +504,7 @@ static void Macro_smpsPan(unsigned int arg_count, unsigned int arg_array[])
 	assert(arg_count >= 2);
 
 	WriteByte(0xE0);
-	WriteByte(arg_array[0] + arg_array[1]);
+	WriteByte(arg_array[0] + arg_array[1]);	// Direction + amsfms
 }
 
 static void Macro_smpsDetune(unsigned int arg_count, unsigned int arg_array[])
@@ -703,12 +707,12 @@ static void Macro_smpsFMvoice(unsigned int arg_count, unsigned int arg_array[])
 
 	if (target_driver >= 3 && arg_count >= 2)
 	{
-		WriteByte(arg_array[0] | 0x80);
-		WriteByte(arg_array[1] + 0x81);
+		WriteByte(arg_array[0] | 0x80);	// Instrument
+		WriteByte(arg_array[1] + 0x81);	// ID of the song containing the instrument
 	}
 	else
 	{
-		WriteByte(arg_array[0]);
+		WriteByte(arg_array[0]);	// Instrument
 	}
 }
 
@@ -720,24 +724,24 @@ static void Macro_smpsModSet(unsigned int arg_count, unsigned int arg_array[])
 
 	if (target_driver >= 3 && source_driver < 3)
 	{
-		WriteByte(arg_array[0] + 1);
-		WriteByte(arg_array[1]);
-		WriteByte(arg_array[2]);
-		WriteByte(((arg_array[3] + 1) * arg_array[1]) & 0xFF);
+		WriteByte(arg_array[0] + 1);	// Wait
+		WriteByte(arg_array[1]);	// Speed
+		WriteByte(arg_array[2]);	// Change
+		WriteByte(((arg_array[3] + 1) * arg_array[1]) & 0xFF);	// Step
 	}
 	else if (target_driver < 3 && source_driver >= 3)
 	{
-		WriteByte(arg_array[0] - 1);
-		WriteByte(arg_array[1]);
-		WriteByte(arg_array[2]);
-		WriteByte(conv0To256(arg_array[3]) / conv0To256(arg_array[1]) - 1);
+		WriteByte(arg_array[0] - 1);	// Wait
+		WriteByte(arg_array[1]);	// Speed
+		WriteByte(arg_array[2]);	// Change
+		WriteByte(conv0To256(arg_array[3]) / conv0To256(arg_array[1]) - 1);	// Step
 	}
 	else
 	{
-		WriteByte(arg_array[0]);
-		WriteByte(arg_array[1]);
-		WriteByte(arg_array[2]);
-		WriteByte(arg_array[3]);
+		WriteByte(arg_array[0]);	// Wait
+		WriteByte(arg_array[1]);	// Speed
+		WriteByte(arg_array[2]);	// Change
+		WriteByte(arg_array[3]);	// Step
 	}
 }
 
@@ -754,7 +758,10 @@ static void Macro_smpsModOn(unsigned int arg_count, unsigned int arg_array[])
 	}
 	else
 	{
-		WriteByte(0xF1);
+		if (arg_count >= 1)
+			printf("Warning: Modulation envelopes are not supported in Sonic 1 or Sonic 2 drivers. smpsModOn flag won't work properly.\n");
+		else
+			WriteByte(0xF1);
 	}
 }
 
@@ -1370,7 +1377,7 @@ static void Macro_smpsVcTotalLevel(unsigned int arg_count, unsigned int arg_arra
 	}
 	else if (target_driver < 3 && source_driver >= 3 && ((vcTL1 & 0x80) || (vcTL2 & 0x80 && vcAlgorithm >= 5) || (vcTL3 & 0x80 && vcAlgorithm >= 4) || (vcTL4 & 0x80 && vcAlgorithm == 7)))
 	{
-		printf("Warning: Voice at 0x%lX has TL bits that do not match its algorithm setting. This voice will not work in S1/S2 drivers.\n", (unsigned long)GetLogicalAddress());
+		printf("Warning: Voice 0x%X has TL bits that do not match its algorithm setting. This voice will not work in S1/S2 drivers.\n", current_voice);
 	}
 
 	if (target_driver == 2)
@@ -1427,6 +1434,8 @@ static void Macro_smpsVcTotalLevel(unsigned int arg_count, unsigned int arg_arra
 		WriteByte(vcTL2|vcTLMask2);
 		WriteByte(vcTL1|vcTLMask1);
 	}
+
+	++current_voice;
 }
 
 static const struct {char *symbol; void (*function)(unsigned int arg_count, unsigned int arg_array[]);} symbol_function_table[] = {
