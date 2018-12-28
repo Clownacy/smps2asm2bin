@@ -536,10 +536,10 @@ static void Macro_smpsReturn(unsigned int arg_count, unsigned int arg_array[])
 
 static void Macro_smpsFade(unsigned int arg_count, unsigned int arg_array[])
 {
-	WriteByte(0xE2);
-
 	if (target_driver >= 3)
 	{
+		WriteByte(0xE2);
+
 		if (arg_count >= 1)
 			WriteByte(arg_array[0]);
 
