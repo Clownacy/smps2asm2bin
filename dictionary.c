@@ -62,3 +62,16 @@ unsigned int LookupDictionary(const char *name)
 	undefined_symbol = name;
 	return 0;
 }
+
+void ClearDictionary(void)
+{
+	DictionaryEntry *entry = dictionary_head;
+	while (entry != NULL)
+	{
+		DictionaryEntry *next_entry = entry->next;
+		free(entry);
+		entry = next_entry;
+	}
+
+	dictionary_head = NULL;
+}

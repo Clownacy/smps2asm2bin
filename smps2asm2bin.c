@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "dictionary.h"
+#include "error.h"
 #include "instruction.h"
 #include "memory_stream.h"
 
@@ -141,6 +142,9 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 
 			index += size_of_line + 1;
 			index += strspn(in_file_buffer + index, "\r\n");
+
+			if (error)
+				goto fail;
 		}
 
 		for (DelayedInstruction *instruction = delayed_instruction_list_head; instruction != NULL; instruction = instruction->next)
@@ -150,15 +154,29 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 			HandleInstruction(instruction->instruction, instruction->arg_count, instruction->arg_array);
 
 			if (undefined_symbol)
-			{
-				printf("Error: symbol '%s' undefined\n", undefined_symbol);
-				exit(1);
-			}
+				PrintError("Error: symbol '%s' undefined\n", undefined_symbol);
+
+			if (error)
+				goto fail;
 		}
 
+		success = true;
+
+		fail:;
+
+		DelayedInstruction *entry = delayed_instruction_list_head;
+		while (entry != NULL)
+		{
+			DelayedInstruction *next_entry = entry->next;
+			free(entry);
+			entry = next_entry;
+		}
+
+		delayed_instruction_list_head = NULL;
+
+		ClearDictionary();
 		free(in_file_buffer);
 
-		success = true;
 	}
 
 	return success;

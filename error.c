@@ -1,8 +1,11 @@
 #include "error.h"
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+bool error;
 
 void PrintError(char *message, ...)
 {
@@ -13,5 +16,5 @@ void PrintError(char *message, ...)
 
 	va_end(args);
 
-	exit(1);
+	error = true;
 }

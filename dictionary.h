@@ -13,3 +13,4 @@ extern const char *undefined_symbol;
 
 void AddDictionaryEntry(const char *name, unsigned int value);
 unsigned int LookupDictionary(const char *name);
+void ClearDictionary(void);
