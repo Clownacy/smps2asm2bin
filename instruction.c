@@ -15,8 +15,8 @@
 #define PSG_DELTA 12
 
 size_t file_offset;
+unsigned int target_driver;
 
-static unsigned int target_driver = 2;
 static unsigned int source_driver;
 static unsigned int target_smps2asm_version;
 static size_t song_start_address;
@@ -188,7 +188,7 @@ static unsigned int convertMainTempoMod(unsigned int mod)
 
 		if (target_driver == 2)
 			result = s1TempotoS2(mod);
-		else if (target_driver >= 3)
+		else //if (target_driver >= 3)
 			result = s1TempotoS3(mod);
 	}
 	else if (source_driver == 2)
@@ -198,7 +198,7 @@ static unsigned int convertMainTempoMod(unsigned int mod)
 
 		if (target_driver == 1)
 			result = s2TempotoS1(mod);
-		else if (target_driver >= 3)
+		else //if (target_driver >= 3)
 			result = s2TempotoS3(mod);
 	}
 	else// if (source_driver >= 3)
@@ -208,7 +208,7 @@ static unsigned int convertMainTempoMod(unsigned int mod)
 
 		if (target_driver == 1)
 			result = s3TempotoS1(mod);
-		else if (target_driver == 2)
+		else //if (target_driver == 2)
 			result = s3TempotoS2(mod);
 	}
 
