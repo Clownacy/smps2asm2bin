@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 
 	if (!SMPS2ASM2BIN("song.asm", output_stream, 2, 0x1380))
 	{
+		MemoryStream_Destroy(output_stream);
 		puts("Aww man, I fucked up :(");
 		return 1;
 	}
