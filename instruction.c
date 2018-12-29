@@ -367,6 +367,8 @@ void HandleLabel(char *label)
 	AddDictionaryEntry(label, GetLogicalAddress());
 }
 
+static void Macro_smpsStop(unsigned int arg_count, unsigned int arg_array[]);
+
 static void Macro_smpsHeaderStartSong(unsigned int arg_count, unsigned int arg_array[])
 {
 	assert(arg_count >= 1);
@@ -544,7 +546,7 @@ static void Macro_smpsFade(unsigned int arg_count, unsigned int arg_array[])
 			WriteByte(arg_array[0]);
 
 		if (source_driver < 3)
-			WriteByte(0xF2);
+			Macro_smpsStop(arg_count, arg_array);
 	}
 	else if (source_driver >= 3 && arg_count >= 1 && arg_array[0] != 0xFF)
 	{
@@ -695,7 +697,7 @@ static void Macro_smpsStopSpecial(unsigned int arg_count, unsigned int arg_array
 	else
 	{
 		printf("Warning: Coord. Flag to stop special SFX does not exist in S2 or S3 drivers. Complain to Flamewing to add it. With adequate caution, smpsStop can do this job.\n");
-		WriteByte(0xF2);
+		Macro_smpsStop(arg_count, arg_array);
 	}
 }
 
