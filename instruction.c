@@ -1558,6 +1558,6 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 	}
 	else
 	{
-		printf("Unhandled instruction: '%s'\n", opcode);
+		PrintError("Error: Unhandled instruction: '%s'\n", opcode);
 	}
 }
