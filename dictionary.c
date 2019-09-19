@@ -15,7 +15,7 @@ const char *undefined_symbol;
 void AddDictionaryEntry(const char *name, unsigned int value)
 {
 	for (DictionaryEntry *entry = dictionary_head; entry != NULL; entry = entry->next)
-		if (!strcmp(entry->name, name))
+		if (strcmp(entry->name, name) == 0)
 			PrintError("Error: Symbol '%s' double-defined\n");
 
 	DictionaryEntry *entry = malloc(sizeof(*entry));
@@ -29,6 +29,7 @@ void AddDictionaryEntry(const char *name, unsigned int value)
 
 unsigned int LookupDictionary(const char *name)
 {
+	// Check if the symbol is actually a literal
 	if (name[0] == '-' || name[0] == '$' || (name[0] >= '0' && name[0] <= '9'))
 	{
 		const bool negative = name[0] == '-';
@@ -55,8 +56,9 @@ unsigned int LookupDictionary(const char *name)
 		return value;
 	}
 
+	// Failing that, look up the symbol in the dictionary
 	for (DictionaryEntry *entry = dictionary_head; entry != NULL; entry = entry->next)
-		if (!strcmp(entry->name, name))
+		if (strcmp(entry->name, name) == 0)
 			return entry->value;
 
 	undefined_symbol = name;

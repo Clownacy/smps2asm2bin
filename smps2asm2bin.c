@@ -31,10 +31,11 @@ static void ParseLine(char *line)
 	if (comment_start)
 		*comment_start = '\0';
 
+	// Look for a label
 	const size_t size_of_label = strcspn(line, " \t:");
 	size_t size_of_whitespace = strspn(line + size_of_label, " \t:");
 
-	if (size_of_label)
+	if (size_of_label != 0)
 	{
 		// We found a label!
 		line[size_of_label] = '\0';
@@ -43,9 +44,10 @@ static void ParseLine(char *line)
 
 	line += size_of_label + size_of_whitespace;
 
+	// Look for an instruction
 	const size_t size_of_instruction = strcspn(line, " \t");
 
-	if (size_of_instruction)
+	if (size_of_instruction != 0)
 	{
 		size_t size_of_whitespace = strspn(line + size_of_instruction, " \t");
 
@@ -53,6 +55,7 @@ static void ParseLine(char *line)
 		line[size_of_instruction] = '\0';
 		char *instruction = line;
 
+		// Look for the instruction's arguments
 		line += size_of_instruction + size_of_whitespace;
 
 		unsigned int arg_count = 0;
@@ -64,7 +67,7 @@ static void ParseLine(char *line)
 			const size_t size_of_whitespace = strspn(line + size_of_arg, " \t,");
 			const bool is_last_arg = strchr(line, ',') == NULL;
 
-			if (size_of_arg)
+			if (size_of_arg != 0)
 			{
 				// We found an argument!
 				line[size_of_arg] = '\0';
@@ -83,11 +86,15 @@ static void ParseLine(char *line)
 
 		const size_t output_position = MemoryStream_GetPosition(output_stream);
 
+		// Now that we've gathered-up the instruction and arguments in a nice format
+		// that we can process, pass them to the function that actually parses them
 		undefined_symbol = NULL;
 		HandleInstruction(instruction, arg_count, arg_array);
 
-		if (undefined_symbol)
+		if (undefined_symbol != 0)
 		{
+			// Instructions that reference undefined symbols can't be
+			// fully-outputted yet, so stick them in a list for later
 			DelayedInstruction *delayed_instruction = malloc(sizeof(*delayed_instruction));
 			delayed_instruction->next = delayed_instruction_list_head;
 			delayed_instruction_list_head = delayed_instruction;
@@ -114,8 +121,9 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 
 	FILE *in_file = fopen(file_name, "rb");
 
-	if (in_file)
+	if (in_file != NULL)
 	{
+		// Read the input file into a string buffer
 		fseek(in_file, 0, SEEK_END);
 		const size_t in_file_size = ftell(in_file);
 		rewind(in_file);
@@ -129,9 +137,10 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 
 		size_t index = 0;
 
+		// Feed each line into the ParseLine function
 		for (;;)
 		{
-			const size_t size_of_line = strcspn(in_file_buffer + index, "\r\n");
+			const size_t size_of_line = strcspn(in_file_buffer + index, "\r\n");	// Preeeeeetty sure this won't work if the file doesn't end with a newline
 
 			in_file_buffer[index + size_of_line] = '\0';
 
@@ -147,13 +156,14 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 				goto fail;
 		}
 
+		// Once the entire file is processed, finish any instructions that had to be delayed because of undefined symbols
 		for (DelayedInstruction *instruction = delayed_instruction_list_head; instruction != NULL; instruction = instruction->next)
 		{
 			undefined_symbol = NULL;
 			MemoryStream_SetPosition(output_stream, instruction->output_position, MEMORYSTREAM_START);
 			HandleInstruction(instruction->instruction, instruction->arg_count, instruction->arg_array);
 
-			if (undefined_symbol)
+			if (undefined_symbol != NULL)
 				PrintError("Error: symbol '%s' undefined\n", undefined_symbol);
 
 			if (error)
@@ -164,6 +174,7 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 
 		fail:;
 
+		// Delete the list of delayed instructions
 		DelayedInstruction *entry = delayed_instruction_list_head;
 		while (entry != NULL)
 		{
