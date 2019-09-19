@@ -1448,103 +1448,111 @@ static void Macro_smpsVcTotalLevel(unsigned int arg_count, unsigned int arg_arra
 	++current_voice;
 }
 
-static const struct {char *symbol; void (*function)(unsigned int arg_count, unsigned int arg_array[]);} symbol_function_table[] = {
-	{"smpsHeaderStartSong", Macro_smpsHeaderStartSong},
-	{"smpsHeaderVoice", Macro_smpsHeaderVoice},
-	{"smpsHeaderVoiceNull", Macro_smpsHeaderVoiceNull},
-	{"smpsHeaderVoiceUVB", Macro_smpsHeaderVoiceUVB},
-	{"smpsHeaderChan", Macro_smpsHeaderChan},
-	{"smpsHeaderTempo", Macro_smpsHeaderTempo},
-	{"smpsHeaderDAC", Macro_smpsHeaderDAC},
-	{"smpsHeaderFM", Macro_smpsHeaderFM},
-	{"smpsHeaderPSG", Macro_smpsHeaderPSG},
-	{"smpsHeaderTempoSFX", Macro_smpsHeaderTempoSFX},
-	{"smpsHeaderChanSFX", Macro_smpsHeaderChanSFX},
-	{"smpsHeaderSFXChannel", Macro_smpsHeaderSFXChannel},
-	{"smpsPan", Macro_smpsPan},
-	{"smpsDetune", Macro_smpsDetune},
-	{"smpsNop", Macro_smpsNop},
-	{"smpsReturn", Macro_smpsReturn},
-	{"smpsFade", Macro_smpsFade},
-	{"smpsChanTempoDiv", Macro_smpsChanTempoDiv},
-	{"smpsAlterVol", Macro_smpsAlterVol},
-	{"smpsNoteFill", Macro_smpsNoteFill},
+// This array matches each SMPS2ASM macro name to a matching function
+static const struct
+{
+	char *symbol;
+	void (*function)(unsigned int arg_count, unsigned int arg_array[]);
+} symbol_function_table[] = {
+	{"smpsHeaderStartSong",     Macro_smpsHeaderStartSong},
+	{"smpsHeaderVoice",         Macro_smpsHeaderVoice},
+	{"smpsHeaderVoiceNull",     Macro_smpsHeaderVoiceNull},
+	{"smpsHeaderVoiceUVB",      Macro_smpsHeaderVoiceUVB},
+	{"smpsHeaderChan",          Macro_smpsHeaderChan},
+	{"smpsHeaderTempo",         Macro_smpsHeaderTempo},
+	{"smpsHeaderDAC",           Macro_smpsHeaderDAC},
+	{"smpsHeaderFM",            Macro_smpsHeaderFM},
+	{"smpsHeaderPSG",           Macro_smpsHeaderPSG},
+	{"smpsHeaderTempoSFX",      Macro_smpsHeaderTempoSFX},
+	{"smpsHeaderChanSFX",       Macro_smpsHeaderChanSFX},
+	{"smpsHeaderSFXChannel",    Macro_smpsHeaderSFXChannel},
+	{"smpsPan",                 Macro_smpsPan},
+	{"smpsDetune",              Macro_smpsDetune},
+	{"smpsNop",                 Macro_smpsNop},
+	{"smpsReturn",              Macro_smpsReturn},
+	{"smpsFade",                Macro_smpsFade},
+	{"smpsChanTempoDiv",        Macro_smpsChanTempoDiv},
+	{"smpsAlterVol",            Macro_smpsAlterVol},
+	{"smpsNoteFill",            Macro_smpsNoteFill},
 	{"smpsChangeTransposition", Macro_smpsChangeTransposition},
-	{"smpsSetTempoMod", Macro_smpsSetTempoMod},
-	{"smpsSetTempoDiv", Macro_smpsSetTempoDiv},
-	{"smpsSetVol", Macro_smpsSetVol},
-	{"smpsPSGAlterVol", Macro_smpsPSGAlterVol},
-	{"smpsClearPush", Macro_smpsClearPush},
-	{"smpsStopSpecial", Macro_smpsStopSpecial},
-	{"smpsFMvoice", Macro_smpsFMvoice},
-	{"smpsModSet", Macro_smpsModSet},
-	{"smpsModOn", Macro_smpsModOn},
-	{"smpsStop", Macro_smpsStop},
-	{"smpsPSGform", Macro_smpsPSGform},
-	{"smpsModOff", Macro_smpsModOff},
-	{"smpsPSGvoice", Macro_smpsPSGvoice},
-	{"smpsJump", Macro_smpsJump},
-	{"smpsLoop", Macro_smpsLoop},
-	{"smpsCall", Macro_smpsCall},
-	{"smpsFMAlterVol", Macro_smpsFMAlterVol},
-	{"smpsStopFM", Macro_smpsStopFM},
-	{"smpsSpindashRev", Macro_smpsSpindashRev},
-	{"smpsPlayDACSample", Macro_smpsPlayDACSample},
-	{"smpsConditionalJump", Macro_smpsConditionalJump},
-	{"smpsSetNote", Macro_smpsSetNote},
-	{"smpsModChange2", Macro_smpsModChange2},
-	{"smpsModChange", Macro_smpsModChange},
-	{"smpsContinuousLoop", Macro_smpsContinuousLoop},
-	{"smpsAlternateSMPS", Macro_smpsAlternateSMPS},
-	{"smpsFM3SpecialMode", Macro_smpsFM3SpecialMode},
-	{"smpsPlaySound", Macro_smpsPlaySound},
-	{"smpsHaltMusic", Macro_smpsHaltMusic},
-	{"smpsCopyData", Macro_smpsCopyData},
-	{"smpsSSGEG", Macro_smpsSSGEG},
-	{"smpsFMVolEnv", Macro_smpsFMVolEnv},
-	{"smpsResetSpindashRev", Macro_smpsResetSpindashRev},
-	{"smpsChanFMCommand", Macro_smpsChanFMCommand},
-	{"smpsPitchSlide", Macro_smpsPitchSlide},
-	{"smpsSetLFO", Macro_smpsSetLFO},
-	{"smpsPlayMusic", Macro_smpsPlayMusic},
-	{"smpsMaxRelRate", Macro_smpsMaxRelRate},
-	{"smpsAlterNote", Macro_smpsAlterNote},
-	{"smpsAlterPitch", Macro_smpsAlterPitch},
-	{"smpsFMFlutter", Macro_smpsFMFlutter},
-	{"smpsWeirdD1LRR", Macro_smpsWeirdD1LRR},
-	{"smpsSetvoice", Macro_smpsSetvoice},
-	{"smpsVcFeedback", Macro_smpsVcFeedback},
-	{"smpsVcAlgorithm", Macro_smpsVcAlgorithm},
-	{"smpsVcUnusedBits", Macro_smpsVcUnusedBits},
-	{"smpsVcDetune", Macro_smpsVcDetune},
-	{"smpsVcCoarseFreq", Macro_smpsVcCoarseFreq},
-	{"smpsVcRateScale", Macro_smpsVcRateScale},
-	{"smpsVcAttackRate", Macro_smpsVcAttackRate},
-	{"smpsVcAmpMod", Macro_smpsVcAmpMod},
-	{"smpsVcDecayRate1", Macro_smpsVcDecayRate1},
-	{"smpsVcDecayRate2", Macro_smpsVcDecayRate2},
-	{"smpsVcDecayLevel", Macro_smpsVcDecayLevel},
-	{"smpsVcReleaseRate", Macro_smpsVcReleaseRate},
-	{"smpsVcTotalLevel", Macro_smpsVcTotalLevel},
+	{"smpsSetTempoMod",         Macro_smpsSetTempoMod},
+	{"smpsSetTempoDiv",         Macro_smpsSetTempoDiv},
+	{"smpsSetVol",              Macro_smpsSetVol},
+	{"smpsPSGAlterVol",         Macro_smpsPSGAlterVol},
+	{"smpsClearPush",           Macro_smpsClearPush},
+	{"smpsStopSpecial",         Macro_smpsStopSpecial},
+	{"smpsFMvoice",             Macro_smpsFMvoice},
+	{"smpsModSet",              Macro_smpsModSet},
+	{"smpsModOn",               Macro_smpsModOn},
+	{"smpsStop",                Macro_smpsStop},
+	{"smpsPSGform",             Macro_smpsPSGform},
+	{"smpsModOff",              Macro_smpsModOff},
+	{"smpsPSGvoice",            Macro_smpsPSGvoice},
+	{"smpsJump",                Macro_smpsJump},
+	{"smpsLoop",                Macro_smpsLoop},
+	{"smpsCall",                Macro_smpsCall},
+	{"smpsFMAlterVol",          Macro_smpsFMAlterVol},
+	{"smpsStopFM",              Macro_smpsStopFM},
+	{"smpsSpindashRev",         Macro_smpsSpindashRev},
+	{"smpsPlayDACSample",       Macro_smpsPlayDACSample},
+	{"smpsConditionalJump",     Macro_smpsConditionalJump},
+	{"smpsSetNote",             Macro_smpsSetNote},
+	{"smpsModChange2",          Macro_smpsModChange2},
+	{"smpsModChange",           Macro_smpsModChange},
+	{"smpsContinuousLoop",      Macro_smpsContinuousLoop},
+	{"smpsAlternateSMPS",       Macro_smpsAlternateSMPS},
+	{"smpsFM3SpecialMode",      Macro_smpsFM3SpecialMode},
+	{"smpsPlaySound",           Macro_smpsPlaySound},
+	{"smpsHaltMusic",           Macro_smpsHaltMusic},
+	{"smpsCopyData",            Macro_smpsCopyData},
+	{"smpsSSGEG",               Macro_smpsSSGEG},
+	{"smpsFMVolEnv",            Macro_smpsFMVolEnv},
+	{"smpsResetSpindashRev",    Macro_smpsResetSpindashRev},
+	{"smpsChanFMCommand",       Macro_smpsChanFMCommand},
+	{"smpsPitchSlide",          Macro_smpsPitchSlide},
+	{"smpsSetLFO",              Macro_smpsSetLFO},
+	{"smpsPlayMusic",           Macro_smpsPlayMusic},
+	{"smpsMaxRelRate",          Macro_smpsMaxRelRate},
+	{"smpsAlterNote",           Macro_smpsAlterNote},
+	{"smpsAlterPitch",          Macro_smpsAlterPitch},
+	{"smpsFMFlutter",           Macro_smpsFMFlutter},
+	{"smpsWeirdD1LRR",          Macro_smpsWeirdD1LRR},
+	{"smpsSetvoice",            Macro_smpsSetvoice},
+	{"smpsVcFeedback",          Macro_smpsVcFeedback},
+	{"smpsVcAlgorithm",         Macro_smpsVcAlgorithm},
+	{"smpsVcUnusedBits",        Macro_smpsVcUnusedBits},
+	{"smpsVcDetune",            Macro_smpsVcDetune},
+	{"smpsVcCoarseFreq",        Macro_smpsVcCoarseFreq},
+	{"smpsVcRateScale",         Macro_smpsVcRateScale},
+	{"smpsVcAttackRate",        Macro_smpsVcAttackRate},
+	{"smpsVcAmpMod",            Macro_smpsVcAmpMod},
+	{"smpsVcDecayRate1",        Macro_smpsVcDecayRate1},
+	{"smpsVcDecayRate2",        Macro_smpsVcDecayRate2},
+	{"smpsVcDecayLevel",        Macro_smpsVcDecayLevel},
+	{"smpsVcReleaseRate",       Macro_smpsVcReleaseRate},
+	{"smpsVcTotalLevel",        Macro_smpsVcTotalLevel},
 };
 
 void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 {
 	unsigned int int_arg_array[arg_count];
 
+	// Convert arguments from symbols to numbers (*everything* resolves to a number eventually - code, labels, constants, etc.)
 	for (unsigned int i = 0; i < arg_count; ++i)
 		int_arg_array[i] = LookupDictionary(arg_array[i]);
 
+	// Execute the function that matches the instruction
 	for (unsigned int i = 0; i < sizeof(symbol_function_table) / sizeof(symbol_function_table[0]); ++i)
 	{
-		if (!strcmp(opcode, symbol_function_table[i].symbol))
+		if (strcmp(opcode, symbol_function_table[i].symbol) == 0)
 		{
 			symbol_function_table[i].function(arg_count, int_arg_array);
 			return;
 		}
 	}
 
-	if (!strcmp(opcode, "dc.b"))
+	// If the instruction doesn't match any of the SMPS2ASM macros, check if it's the 68k's 'dc.b' instruction
+	if (strcmp(opcode, "dc.b") == 0)
 	{
 		for (unsigned int i = 0; i < arg_count; ++i)
 		{
@@ -1555,9 +1563,10 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 
 			WriteByte(value);
 		}
+
+		return;
 	}
-	else
-	{
-		PrintError("Error: Unhandled instruction: '%s'\n", opcode);
-	}
+
+	// Oh no
+	PrintError("Error: Unhandled instruction: '%s'\n", opcode);
 }
