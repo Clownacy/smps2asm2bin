@@ -121,7 +121,11 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 
 	FILE *in_file = fopen(file_name, "rb");
 
-	if (in_file != NULL)
+	if (in_file == NULL)
+	{
+		PrintError("Couldn't open input file\n");
+	}
+	else
 	{
 		// Read the input file into a string buffer
 		fseek(in_file, 0, SEEK_END);
@@ -140,7 +144,7 @@ bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p
 		// Feed each line into the ParseLine function
 		for (;;)
 		{
-			const size_t size_of_line = strcspn(in_file_buffer + index, "\r\n");	// Preeeeeetty sure this won't work if the file doesn't end with a newline
+			const size_t size_of_line = strcspn(in_file_buffer + index, "\r\n");
 
 			in_file_buffer[index + size_of_line] = '\0';
 
