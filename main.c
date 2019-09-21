@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
 	MemoryStream *output_stream = MemoryStream_Create(0x100, true);
 
-	if (!SMPS2ASM2BIN("song.asm", output_stream, 2, 0x1380))
+	if (!SMPS2ASM2BIN(argc > 1 ? argv[1] : "song.asm", output_stream, 2, 0x1380))
 	{
 		MemoryStream_Destroy(output_stream);
 		puts("Aww man, I fucked up :(");
