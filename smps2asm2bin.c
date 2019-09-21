@@ -91,7 +91,7 @@ static void ParseLine(char *line)
 		undefined_symbol = NULL;
 		HandleInstruction(instruction, arg_count, arg_array);
 
-		if (undefined_symbol != 0)
+		if (undefined_symbol != NULL)
 		{
 			// Instructions that reference undefined symbols can't be
 			// fully-outputted yet, so stick them in a list for later

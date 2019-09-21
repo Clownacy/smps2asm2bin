@@ -12,7 +12,7 @@ DictionaryEntry *dictionary_head;
 
 const char *undefined_symbol;
 
-void AddDictionaryEntry(const char *name, unsigned int value)
+void AddDictionaryEntry(const char *name, long value)
 {
 	for (DictionaryEntry *entry = dictionary_head; entry != NULL; entry = entry->next)
 		if (strcmp(entry->name, name) == 0)
@@ -27,7 +27,7 @@ void AddDictionaryEntry(const char *name, unsigned int value)
 	entry->value = value;
 }
 
-unsigned int LookupDictionary(const char *name)
+long LookupDictionary(const char *name)
 {
 	// Check if the symbol is actually a literal
 	if (name[0] == '-' || name[0] == '$' || (name[0] >= '0' && name[0] <= '9'))
@@ -37,7 +37,7 @@ unsigned int LookupDictionary(const char *name)
 		if (negative)
 			++name;
 
-		unsigned int value;
+		long value;
 
 		if (name[0] == '$')
 		{

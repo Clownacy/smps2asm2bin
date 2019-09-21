@@ -367,9 +367,9 @@ void HandleLabel(char *label)
 	AddDictionaryEntry(label, GetLogicalAddress());
 }
 
-static void Macro_smpsStop(unsigned int arg_count, unsigned int arg_array[]);
+static void Macro_smpsStop(unsigned int arg_count, long arg_array[]);
 
-static void Macro_smpsHeaderStartSong(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderStartSong(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -386,7 +386,7 @@ static void Macro_smpsHeaderStartSong(unsigned int arg_count, unsigned int arg_a
 		PrintError("Error: smpsHeaderStartSong must be evaluable on first pass\n");
 }
 
-static void Macro_smpsHeaderVoice(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderVoice(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -399,7 +399,7 @@ static void Macro_smpsHeaderVoice(unsigned int arg_count, unsigned int arg_array
 		WriteShort(arg_array[0] - song_start_address);
 }
 
-static void Macro_smpsHeaderVoiceNull(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderVoiceNull(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -410,7 +410,7 @@ static void Macro_smpsHeaderVoiceNull(unsigned int arg_count, unsigned int arg_a
 	WriteShort(0);
 }
 
-static void Macro_smpsHeaderVoiceUVB(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderVoiceUVB(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -426,7 +426,7 @@ static void Macro_smpsHeaderVoiceUVB(unsigned int arg_count, unsigned int arg_ar
 		PrintError("Error: smpsHeaderVoiceUVB not supported in S1/S2's drivers\n");
 }
 
-static void Macro_smpsHeaderChan(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderChan(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -434,7 +434,7 @@ static void Macro_smpsHeaderChan(unsigned int arg_count, unsigned int arg_array[
 	WriteByte(arg_array[1]);	// PSG channel count
 }
 
-static void Macro_smpsHeaderTempo(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderTempo(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -442,7 +442,7 @@ static void Macro_smpsHeaderTempo(unsigned int arg_count, unsigned int arg_array
 	WriteByte(convertMainTempoMod(arg_array[1]));
 }
 
-static void Macro_smpsHeaderDAC(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderDAC(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -451,7 +451,7 @@ static void Macro_smpsHeaderDAC(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte((arg_count >= 3) ? arg_array[2] : 0);	// Volume
 }
 
-static void Macro_smpsHeaderFM(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderFM(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 3);
 
@@ -460,7 +460,7 @@ static void Macro_smpsHeaderFM(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[2]);		// Volume
 }
 
-static void Macro_smpsHeaderPSG(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderPSG(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 5);
 
@@ -471,21 +471,21 @@ static void Macro_smpsHeaderPSG(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte(arg_array[4]);			// Instrument
 }
 
-static void Macro_smpsHeaderTempoSFX(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderTempoSFX(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
 	WriteByte(arg_array[0]);	// Tempo
 }
 
-static void Macro_smpsHeaderChanSFX(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderChanSFX(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
 	WriteByte(arg_array[0]);	// Channel count
 }
 
-static void Macro_smpsHeaderSFXChannel(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHeaderSFXChannel(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -501,7 +501,7 @@ static void Macro_smpsHeaderSFXChannel(unsigned int arg_count, unsigned int arg_
 	WriteByte(arg_array[3]);		// Volume
 }
 
-static void Macro_smpsPan(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPan(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -509,7 +509,7 @@ static void Macro_smpsPan(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0] + arg_array[1]);	// Direction + amsfms
 }
 
-static void Macro_smpsDetune(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsDetune(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -517,7 +517,7 @@ static void Macro_smpsDetune(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsNop(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsNop(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -528,7 +528,7 @@ static void Macro_smpsNop(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsReturn(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsReturn(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -536,7 +536,7 @@ static void Macro_smpsReturn(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte((target_driver >= 3) ? 0xF9 : 0xE3);
 }
 
-static void Macro_smpsFade(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFade(unsigned int arg_count, long arg_array[])
 {
 	if (target_driver >= 3)
 	{
@@ -558,7 +558,7 @@ static void Macro_smpsFade(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsChanTempoDiv(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsChanTempoDiv(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -579,7 +579,7 @@ static void Macro_smpsChanTempoDiv(unsigned int arg_count, unsigned int arg_arra
 	}
 }
 
-static void Macro_smpsAlterVol(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsAlterVol(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -587,7 +587,7 @@ static void Macro_smpsAlterVol(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsNoteFill(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsNoteFill(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -609,7 +609,7 @@ static void Macro_smpsNoteFill(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsChangeTransposition(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsChangeTransposition(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -617,7 +617,7 @@ static void Macro_smpsChangeTransposition(unsigned int arg_count, unsigned int a
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsSetTempoMod(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetTempoMod(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -634,7 +634,7 @@ static void Macro_smpsSetTempoMod(unsigned int arg_count, unsigned int arg_array
 	WriteByte(convertMainTempoMod(arg_array[0]));
 }
 
-static void Macro_smpsSetTempoDiv(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetTempoDiv(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -651,7 +651,7 @@ static void Macro_smpsSetTempoDiv(unsigned int arg_count, unsigned int arg_array
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsSetVol(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetVol(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -666,7 +666,7 @@ static void Macro_smpsSetVol(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsPSGAlterVol(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPSGAlterVol(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -674,7 +674,7 @@ static void Macro_smpsPSGAlterVol(unsigned int arg_count, unsigned int arg_array
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsClearPush(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsClearPush(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -685,7 +685,7 @@ static void Macro_smpsClearPush(unsigned int arg_count, unsigned int arg_array[]
 		PrintError("Coord. Flag to clear S1 push block flag does not exist in S2 or S3 drivers. Complain to Flamewing to add it.\n");
 }
 
-static void Macro_smpsStopSpecial(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsStopSpecial(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -701,7 +701,7 @@ static void Macro_smpsStopSpecial(unsigned int arg_count, unsigned int arg_array
 	}
 }
 
-static void Macro_smpsFMvoice(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFMvoice(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -718,7 +718,7 @@ static void Macro_smpsFMvoice(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsModSet(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsModSet(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -747,7 +747,7 @@ static void Macro_smpsModSet(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsModOn(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsModOn(unsigned int arg_count, long arg_array[])
 {
 	if (target_driver >= 3)
 	{
@@ -767,7 +767,7 @@ static void Macro_smpsModOn(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsStop(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsStop(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -775,7 +775,7 @@ static void Macro_smpsStop(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(0xF2);
 }
 
-static void Macro_smpsPSGform(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPSGform(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -783,7 +783,7 @@ static void Macro_smpsPSGform(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsModOff(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsModOff(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -791,7 +791,7 @@ static void Macro_smpsModOff(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte((target_driver >= 3) ? 0xFA : 0xF4);
 }
 
-static void Macro_smpsPSGvoice(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPSGvoice(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -799,7 +799,7 @@ static void Macro_smpsPSGvoice(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsJump(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsJump(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -811,7 +811,7 @@ static void Macro_smpsJump(unsigned int arg_count, unsigned int arg_array[])
 		WriteShort(arg_array[0] - GetLogicalAddress() - 1);
 }
 
-static void Macro_smpsLoop(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsLoop(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 3);
 
@@ -825,7 +825,7 @@ static void Macro_smpsLoop(unsigned int arg_count, unsigned int arg_array[])
 		WriteShort(arg_array[2] - GetLogicalAddress() - 1);	// Location
 }
 
-static void Macro_smpsCall(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsCall(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -837,7 +837,7 @@ static void Macro_smpsCall(unsigned int arg_count, unsigned int arg_array[])
 		WriteShort(arg_array[0] - GetLogicalAddress() - 1);
 }
 
-static void Macro_smpsFMAlterVol(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFMAlterVol(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -862,7 +862,7 @@ static void Macro_smpsFMAlterVol(unsigned int arg_count, unsigned int arg_array[
 	}
 }
 
-static void Macro_smpsStopFM(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsStopFM(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -873,7 +873,7 @@ static void Macro_smpsStopFM(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(0xE3);
 }
 
-static void Macro_smpsSpindashRev(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSpindashRev(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -884,7 +884,7 @@ static void Macro_smpsSpindashRev(unsigned int arg_count, unsigned int arg_array
 	WriteByte(0xE9);
 }
 
-static void Macro_smpsPlayDACSample(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPlayDACSample(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -895,7 +895,7 @@ static void Macro_smpsPlayDACSample(unsigned int arg_count, unsigned int arg_arr
 	WriteByte(arg_array[0] & 0x7F);
 }
 
-static void Macro_smpsConditionalJump(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsConditionalJump(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -907,7 +907,7 @@ static void Macro_smpsConditionalJump(unsigned int arg_count, unsigned int arg_a
 	WriteShort(arg_array[1]);
 }
 
-static void Macro_smpsSetNote(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetNote(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -918,7 +918,7 @@ static void Macro_smpsSetNote(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsFMICommand(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFMICommand(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -930,7 +930,7 @@ static void Macro_smpsFMICommand(unsigned int arg_count, unsigned int arg_array[
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsModChange2(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsModChange2(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -942,7 +942,7 @@ static void Macro_smpsModChange2(unsigned int arg_count, unsigned int arg_array[
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsModChange(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsModChange(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -953,7 +953,7 @@ static void Macro_smpsModChange(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsContinuousLoop(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsContinuousLoop(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -964,7 +964,7 @@ static void Macro_smpsContinuousLoop(unsigned int arg_count, unsigned int arg_ar
 	WriteShort(arg_array[0]);
 }
 
-static void Macro_smpsAlternateSMPS(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsAlternateSMPS(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -975,7 +975,7 @@ static void Macro_smpsAlternateSMPS(unsigned int arg_count, unsigned int arg_arr
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsFM3SpecialMode(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFM3SpecialMode(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -989,7 +989,7 @@ static void Macro_smpsFM3SpecialMode(unsigned int arg_count, unsigned int arg_ar
 	WriteByte(arg_array[3]);
 }
 
-static void Macro_smpsPlaySound(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPlaySound(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -1003,7 +1003,7 @@ static void Macro_smpsPlaySound(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsHaltMusic(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsHaltMusic(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -1015,7 +1015,7 @@ static void Macro_smpsHaltMusic(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsCopyData(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsCopyData(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -1028,7 +1028,7 @@ static void Macro_smpsCopyData(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsSSGEG(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSSGEG(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1043,7 +1043,7 @@ static void Macro_smpsSSGEG(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[3]);
 }
 
-static void Macro_smpsFMVolEnv(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFMVolEnv(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -1056,7 +1056,7 @@ static void Macro_smpsFMVolEnv(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsResetSpindashRev(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsResetSpindashRev(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
@@ -1068,7 +1068,7 @@ static void Macro_smpsResetSpindashRev(unsigned int arg_count, unsigned int arg_
 	WriteByte(0x07);
 }
 
-static void Macro_smpsChanFMCommand(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsChanFMCommand(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -1081,7 +1081,7 @@ static void Macro_smpsChanFMCommand(unsigned int arg_count, unsigned int arg_arr
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsPitchSlide(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPitchSlide(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -1093,7 +1093,7 @@ static void Macro_smpsPitchSlide(unsigned int arg_count, unsigned int arg_array[
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsSetLFO(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetLFO(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 2);
 
@@ -1106,7 +1106,7 @@ static void Macro_smpsSetLFO(unsigned int arg_count, unsigned int arg_array[])
 	WriteByte(arg_array[1]);
 }
 
-static void Macro_smpsPlayMusic(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsPlayMusic(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -1118,15 +1118,15 @@ static void Macro_smpsPlayMusic(unsigned int arg_count, unsigned int arg_array[]
 	WriteByte(arg_array[0]);
 }
 
-static void Macro_smpsMaxRelRate(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsMaxRelRate(unsigned int arg_count, long arg_array[])
 {
 	(void)arg_count;
 	(void)arg_array;
 
 	if (target_driver >= 3)
 	{
-		Macro_smpsFMICommand(2, (unsigned int[]){0x88, 0x0F});
-		Macro_smpsFMICommand(2, (unsigned int[]){0x8C, 0x0F});
+		Macro_smpsFMICommand(2, (long[]){0x88, 0x0F});
+		Macro_smpsFMICommand(2, (long[]){0x8C, 0x0F});
 	}
 	else
 	{
@@ -1134,27 +1134,27 @@ static void Macro_smpsMaxRelRate(unsigned int arg_count, unsigned int arg_array[
 	}
 }
 
-static void Macro_smpsAlterNote(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsAlterNote(unsigned int arg_count, long arg_array[])
 {
 	Macro_smpsDetune(arg_count, arg_array);
 }
 
-static void Macro_smpsAlterPitch(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsAlterPitch(unsigned int arg_count, long arg_array[])
 {
 	Macro_smpsChangeTransposition(arg_count, arg_array);
 }
 
-static void Macro_smpsFMFlutter(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsFMFlutter(unsigned int arg_count, long arg_array[])
 {
 	Macro_smpsFMVolEnv(arg_count, arg_array);
 }
 
-static void Macro_smpsWeirdD1LRR(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsWeirdD1LRR(unsigned int arg_count, long arg_array[])
 {
 	Macro_smpsMaxRelRate(arg_count, arg_array);
 }
 
-static void Macro_smpsSetvoice(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsSetvoice(unsigned int arg_count, long arg_array[])
 {
 	Macro_smpsFMvoice(arg_count, arg_array);
 }
@@ -1211,21 +1211,21 @@ static unsigned int vcTLMask2;
 static unsigned int vcTLMask3;
 static unsigned int vcTLMask4;
 
-static void Macro_smpsVcFeedback(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcFeedback(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
 	vcFeedback = arg_array[0];
 }
 
-static void Macro_smpsVcAlgorithm(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcAlgorithm(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
 	vcAlgorithm = arg_array[0];
 }
 
-static void Macro_smpsVcUnusedBits(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcUnusedBits(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 1);
 
@@ -1247,7 +1247,7 @@ static void Macro_smpsVcUnusedBits(unsigned int arg_count, unsigned int arg_arra
 	}
 }
 
-static void Macro_smpsVcDetune(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcDetune(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1257,7 +1257,7 @@ static void Macro_smpsVcDetune(unsigned int arg_count, unsigned int arg_array[])
 	vcDT4 = arg_array[3];
 }
 
-static void Macro_smpsVcCoarseFreq(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcCoarseFreq(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1267,7 +1267,7 @@ static void Macro_smpsVcCoarseFreq(unsigned int arg_count, unsigned int arg_arra
 	vcCF4 = arg_array[3];
 }
 
-static void Macro_smpsVcRateScale(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcRateScale(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1277,7 +1277,7 @@ static void Macro_smpsVcRateScale(unsigned int arg_count, unsigned int arg_array
 	vcRS4 = arg_array[3];
 }
 
-static void Macro_smpsVcAttackRate(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcAttackRate(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1287,7 +1287,7 @@ static void Macro_smpsVcAttackRate(unsigned int arg_count, unsigned int arg_arra
 	vcAR4 = arg_array[3];
 }
 
-static void Macro_smpsVcAmpMod(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcAmpMod(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1307,7 +1307,7 @@ static void Macro_smpsVcAmpMod(unsigned int arg_count, unsigned int arg_array[])
 	}
 }
 
-static void Macro_smpsVcDecayRate1(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcDecayRate1(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1317,7 +1317,7 @@ static void Macro_smpsVcDecayRate1(unsigned int arg_count, unsigned int arg_arra
 	vcD1R4 = arg_array[3];
 }
 
-static void Macro_smpsVcDecayRate2(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcDecayRate2(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1327,7 +1327,7 @@ static void Macro_smpsVcDecayRate2(unsigned int arg_count, unsigned int arg_arra
 	vcD2R4 = arg_array[3];
 }
 
-static void Macro_smpsVcDecayLevel(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcDecayLevel(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1337,7 +1337,7 @@ static void Macro_smpsVcDecayLevel(unsigned int arg_count, unsigned int arg_arra
 	vcDL4 = arg_array[3];
 }
 
-static void Macro_smpsVcReleaseRate(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcReleaseRate(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1347,7 +1347,7 @@ static void Macro_smpsVcReleaseRate(unsigned int arg_count, unsigned int arg_arr
 	vcRR4 = arg_array[3];
 }
 
-static void Macro_smpsVcTotalLevel(unsigned int arg_count, unsigned int arg_array[])
+static void Macro_smpsVcTotalLevel(unsigned int arg_count, long arg_array[])
 {
 	assert(arg_count >= 4);
 
@@ -1452,7 +1452,7 @@ static void Macro_smpsVcTotalLevel(unsigned int arg_count, unsigned int arg_arra
 static const struct
 {
 	char *symbol;
-	void (*function)(unsigned int arg_count, unsigned int arg_array[]);
+	void (*function)(unsigned int arg_count, long arg_array[]);
 } symbol_function_table[] = {
 	{"smpsHeaderStartSong",     Macro_smpsHeaderStartSong},
 	{"smpsHeaderVoice",         Macro_smpsHeaderVoice},
@@ -1535,7 +1535,7 @@ static const struct
 
 void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 {
-	unsigned int int_arg_array[arg_count];
+	long int_arg_array[arg_count];
 
 	// Convert arguments from symbols to numbers (*everything* resolves to a number eventually - code, labels, constants, etc.)
 	for (unsigned int i = 0; i < arg_count; ++i)
@@ -1556,7 +1556,7 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 	{
 		for (unsigned int i = 0; i < arg_count; ++i)
 		{
-			const unsigned int value = int_arg_array[i];
+			const long value = int_arg_array[i];
 
 			if (value > 0xFF)
 				PrintError("Error: dc.b value must fit into a byte\n");
