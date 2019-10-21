@@ -16,7 +16,7 @@ void AddDictionaryEntry(const char *name, long value)
 {
 	for (DictionaryEntry *entry = dictionary_head; entry != NULL; entry = entry->next)
 		if (strcmp(entry->name, name) == 0)
-			PrintError("Error: Symbol '%s' double-defined\n");
+			PrintError("Error: Symbol '%s' double-defined\n", name);
 
 	DictionaryEntry *entry = malloc(sizeof(*entry));
 	entry->next = dictionary_head;
