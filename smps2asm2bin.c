@@ -111,7 +111,7 @@ static void ParseLine(char *line)
 	}
 }
 
-bool SMPS2ASM2BIN(char *file_name, MemoryStream *p_output_stream, unsigned int p_target_driver, size_t p_file_offset)
+bool SMPS2ASM2BIN(const char *file_name, MemoryStream *p_output_stream, unsigned int p_target_driver, size_t p_file_offset)
 {
 	bool success = false;
 
