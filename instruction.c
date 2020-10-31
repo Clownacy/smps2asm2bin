@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "common.h"
@@ -1535,7 +1536,12 @@ static const struct
 
 void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 {
-	long int_arg_array[arg_count];
+	long *int_arg_array = malloc(sizeof(long) * arg_count);
+	if (int_arg_array == NULL)
+	{
+		PrintError("Error: malloc failed. Great.");
+		return;
+	}
 
 	// Convert arguments from symbols to numbers (*everything* resolves to a number eventually - code, labels, constants, etc.)
 	for (unsigned int i = 0; i < arg_count; ++i)
@@ -1547,6 +1553,7 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 		if (strcmp(opcode, symbol_function_table[i].symbol) == 0)
 		{
 			symbol_function_table[i].function(arg_count, int_arg_array);
+			free(int_arg_array);
 			return;
 		}
 	}
@@ -1563,10 +1570,12 @@ void HandleInstruction(char *opcode, unsigned int arg_count, char *arg_array[])
 
 			WriteByte(value);
 		}
-
-		return;
+	}
+	else
+	{
+		// Oh no
+		PrintError("Error: Unhandled instruction: '%s'\n", opcode);
 	}
 
-	// Oh no
-	PrintError("Error: Unhandled instruction: '%s'\n", opcode);
+	free(int_arg_array);
 }
