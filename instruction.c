@@ -231,9 +231,9 @@ static void CheckedChannelPointer(unsigned int loc)
 	}
 }
 
-static unsigned int PSGPitchConvert(unsigned int pitch)
+static long PSGPitchConvert(long pitch)
 {
-	unsigned int value;
+	long value;
 
 	if (target_driver >= 3 && source_driver < 3)
 		value = (pitch + PSG_DELTA) & 0xFF;
